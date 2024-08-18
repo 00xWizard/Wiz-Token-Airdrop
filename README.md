@@ -1,66 +1,73 @@
-## Foundry
+# Wizard Token Airdrop
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+This protocol is an implementation of the Wizard Token (WIZ) Airdrop using a Merkle Tree to efficiently verify claims. The airdrop is facilitated by two smart contracts: `MerkleAirdop` and `WizardToken`, written in Solidity. Testing and deployment are managed using Foundry.
 
-Foundry consists of:
+## Overview
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+- **`MerkleAirdop` Contract**: Allows eligible users to claim their WIZ tokens by verifying their address and claim amount against a Merkle root.
+- **`WizardToken` Contract**: Implements a standard ERC20 token with minting functionality, minting `WIZ` tokens.
 
-## Documentation
+## Contracts
 
-https://book.getfoundry.sh/
+### MerkleAirdop.sol
+
+This contract manages the airdrop distribution. Key features:
+- **Merkle Proof Verification**: Ensures that users claiming tokens are eligible by verifying the Merkle proof.
+- **Signature Verification**: Ensures that each claim is properly signed.
+- **Event Emission**: Emits a `Claim` event upon successful token claims.
+- **Claim Protection**: Prevents users from claiming tokens more than once.
+
+### WizardToken.sol
+
+This is an ERC20 token contract for the WIZ token. Key features:
+- **Minting**: The contract owner can mint new WIZ tokens.
+- **Transfer**: Tokens are transferred to the `MerkleAirdop` contract for distribution.
+
+## Deployment
+
+The `DeployMerkleAirdrop.s.sol` script handles the deployment of both contracts.
+
+### Deployment Script
+
+- **DeployMerkleAirdrop**: 
+  - Deploys the `WizardToken` and `MerkleAirdop` contracts.
+  - Mints and transfers tokens to the `MerkleAirdop` contract for distribution.
 
 ## Usage
 
-### Build
+To deploy and interact with the contracts:
 
-```shell
-$ forge build
-```
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/your-repo/wizard-token-airdrop.git
+    cd wizard-token-airdrop
+    ```
 
-### Test
+2. Install Foundry:
+    Follow the instructions to install Foundry [here](https://book.getfoundry.sh/getting-started/installation).
 
-```shell
-$ forge test
-```
+3. Compile the contracts:
+    ```bash
+    forge build
+    ```
 
-### Format
+4. Deploy the contracts using the script:
+    ```bash
+    forge script script/DeployMerkleAirdrop.s.sol --broadcast --rpc-url YOUR_RPC_URL --private-key YOUR_PRIVATE_KEY
+    ```
 
-```shell
-$ forge fmt
-```
+5. Run the tests:
+    ```bash
+    forge test
+    ```
 
-### Gas Snapshots
+## Tests
 
-```shell
-$ forge snapshot
-```
+The tests are implemented in `MerkleAirdropTest.t.sol`. The key tests include:
+- Claim verification with Merkle proofs and signatures.
+- Correct distribution of tokens.
+- Prevention of multiple claims by the same user.
 
-### Anvil
+## License
 
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+This project is licensed under the MIT License. See the LICENSE file for details.
