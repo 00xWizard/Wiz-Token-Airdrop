@@ -14,10 +14,10 @@ contract MerkleAirdop is EIP712 {
 
     // @dev Array to store claimers' addresses.
     address[] claimers;
-    
+
     // @dev Merkle root for verifying the proofs.
     bytes32 private immutable i_merkleRoot;
-    
+
     // @dev ERC20 token to be airdropped.
     IERC20 private immutable i_airdropToken;
 
@@ -33,7 +33,7 @@ contract MerkleAirdop is EIP712 {
     bytes32 private constant MESSAGE_TYPEHASH = keccak256("AirdropClaim(address account, uint256 amount)");
 
     // @dev Struct representing a claim.
-    struct AirdrioClaim{
+    struct AirdrioClaim {
         address account;
         uint256 amount;
     }
@@ -53,7 +53,9 @@ contract MerkleAirdop is EIP712 {
     // @param amount The amount of tokens to claim.
     // @param merkleProof Array of proofs to verify the Merkle tree.
     // @param v, r, s Components of the signature for EIP712 verification.
-    function claim(address account, uint256 amount, bytes32[] calldata merkleProof, uint8 v, bytes32 r, bytes32 s) external {
+    function claim(address account, uint256 amount, bytes32[] calldata merkleProof, uint8 v, bytes32 r, bytes32 s)
+        external
+    {
         // Ensure the user has not already claimed.
         if (s_hasClaimed[account]) {
             revert MerkleAirdop__AlreadyClaimed();
@@ -80,9 +82,8 @@ contract MerkleAirdop is EIP712 {
     // @param account The address of the claimer.
     // @param amount The amount of tokens to claim.
     function getMessageHash(address account, uint256 amount) public view returns (bytes32) {
-        return _hashTypedDataV4(
-            keccak256(abi.encode(MESSAGE_TYPEHASH, AirdrioClaim({account: account, amount: amount})))
-        );
+        return
+            _hashTypedDataV4(keccak256(abi.encode(MESSAGE_TYPEHASH, AirdrioClaim({account: account, amount: amount}))));
     }
 
     // @dev Returns the Merkle root.
@@ -96,8 +97,12 @@ contract MerkleAirdop is EIP712 {
     }
 
     // @dev Internal function to verify the validity of the signature.
-    function _isValidSingnature(address account, bytes32 digest, uint8 v, bytes32 r, bytes32 s) internal pure returns (bool) {
-        (address actualSigner, ,) = ECDSA.tryRecover(digest, v, r, s);
+    function _isValidSingnature(address account, bytes32 digest, uint8 v, bytes32 r, bytes32 s)
+        internal
+        pure
+        returns (bool)
+    {
+        (address actualSigner,,) = ECDSA.tryRecover(digest, v, r, s);
         return actualSigner == account;
     }
 }

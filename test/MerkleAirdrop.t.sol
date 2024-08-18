@@ -8,8 +8,7 @@ import {WizardToken} from "../src/WizardToken.sol";
 import {DeployMerkleAirdrop} from "../script/DeployMerkleAirdrop.s.sol";
 import {ZkSyncChainChecker} from "../lib/foundry-devops/src/ZkSyncChainChecker.sol";
 
-contract MerkleAirdropTest is ZkSyncChainChecker,  Test {
-
+contract MerkleAirdropTest is ZkSyncChainChecker, Test {
     MerkleAirdop public airdrop;
     WizardToken public token;
     bytes32 public Root = 0xaa5d581231e596618465a56aa0f5870ba6e20785fe436d5bfb82b08662ccc7c4;
@@ -25,14 +24,12 @@ contract MerkleAirdropTest is ZkSyncChainChecker,  Test {
     uint256 userPrivKey;
 
     function setUp() public {
-
-        
-       token = new WizardToken();
-       airdrop = new MerkleAirdop(Root, token);
-       token.mint(token.owner(), AMOUNT_TO_SEND);
-       token.transfer(address(airdrop), AMOUNT_TO_SEND);
-       (user, userPrivKey) = makeAddrAndKey("user");
-       gasPayer = makeAddr("gasPayer");
+        token = new WizardToken();
+        airdrop = new MerkleAirdop(Root, token);
+        token.mint(token.owner(), AMOUNT_TO_SEND);
+        token.transfer(address(airdrop), AMOUNT_TO_SEND);
+        (user, userPrivKey) = makeAddrAndKey("user");
+        gasPayer = makeAddr("gasPayer");
     }
 
     function testUsersCanClaim() public {
